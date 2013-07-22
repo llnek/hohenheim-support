@@ -26,5 +26,6 @@ package com.zotoh.hohenheim.core
  */
 trait Job extends Identifiable {
   def container() : Any
+  def event() : Any
 }
 
