@@ -25,13 +25,6 @@ package com.zotoh.hohenheim.core
  * @author kenl
  */
 trait Job extends Identifiable {
-
-  def set(key:String, value:Any) : Any
-  def get(key:String) : Any
-  def clear(key:String) : Unit
-  def reset() : Unit
   def container() : Any
-  def event() : Any
-
 }
 
