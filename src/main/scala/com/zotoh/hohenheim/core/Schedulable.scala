@@ -26,7 +26,7 @@ package com.zotoh.hohenheim.core
  */
 trait Schedulable extends Disposable {
 
-  def dequeue(w:Runnble) : Unit
+  def dequeue(w:Runnable) : Unit
   def run(w:Runnable) : Unit
   def postpone(w:Runnable, delayMillis:Long) : Unit
   def hold(pid:Long, w:Runnable) : Unit
@@ -34,7 +34,7 @@ trait Schedulable extends Disposable {
 
   def wakeup(w:Runnable) : Unit
   def wakeAndRun(pid:Long,w:Runnable) : Unit
-  def reschedule [_ w] )
+  def reschedule(w:Runnable) : Unit
 
 }
 
