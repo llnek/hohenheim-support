@@ -19,18 +19,20 @@
  *
  ??*/
 
-package com.zotoh.hohenheim.core
+package com.zotoh.frwk.util
 
 /**
  * @author kenl
  */
-trait Schedulable extends Disposable {
+trait Schedulable {
 
   def dequeue(w:Runnable) : Unit
   def run(w:Runnable) : Unit
   def postpone(w:Runnable, delayMillis:Long) : Unit
   def hold(pid:Long, w:Runnable) : Unit
   def hold(w:Runnable) : Unit
+
+  def dispose() : Unit
 
   def wakeup(w:Runnable) : Unit
   def wakeAndRun(pid:Long,w:Runnable) : Unit
