@@ -25,7 +25,7 @@ package com.zotoh.hohenheim.core
  * @author kenl
  */
 trait Job extends Identifiable {
-  def container() : Any
+  def parent() : Any
   def event() : Any
 }
 
