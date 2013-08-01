@@ -36,10 +36,31 @@
   </target>
 
   <target name="compile_and_jar">
+
+    <!--
     <antcall target="compile_java" />
-    <scalac srcdir="${src.dir}/scala" destdir="${build.dir}" classpathref="compile.path.id" fork="true" jvmargs="-Xmx5120M -Xms2048M">
+    -->
+
+    <scalac srcdir="${src.dir}/scala" destdir="${build.dir}" classpathref="compile.path.id"
+      fork="true" jvmargs="-Xmx5120M -Xms1024M">
+      <include name="com/zotoh/hohenheim/loaders/**/*.scala"/>
+    </scalac>
+    <jar destfile="${distrib.dir}/${PID}-spec-${build.version}.jar" >
+      <fileset dir="${build.dir}">
+      </fileset>
+    </jar>
+
+    <delete dir="${build.dir}"/>
+    <mkdir dir="${build.dir}"/>
+
+    <antcall target="compile_java" />
+
+    <scalac srcdir="${src.dir}/scala" destdir="${build.dir}" classpathref="compile.path.id"
+      fork="true" jvmargs="-Xmx5120M -Xms1024M">
+      <exclude name="**/loaders/*.scala"/>
       <include name="**/*.scala"/>
     </scalac>
+
     <!-- copy over other resources -->
     <copy todir="${build.dir}">
       <fileset dir="${src.dir}/java">
@@ -51,14 +72,16 @@
         <exclude name="**/.svn"/>
       </fileset>
     </copy>
-    <!-- jar it -->
+
     <jar destfile="${distrib.dir}/${PID}-${build.version}.jar" >
       <fileset dir="${build.dir}">
         <exclude name="**/log4j.properties"/>
         <exclude name="**/logback.xml"/>
       </fileset>
     </jar>
+
   </target>
+
 
   <!--
        compile test code
@@ -138,7 +161,14 @@
 
   <target name="pack_all_dist">
     <copy todir="${pack.dir}/dist">
-      <fileset dir="${distrib.dir}"></fileset>
+      <fileset dir="${distrib.dir}">
+        <exclude name="*-spec-*.jar"/>
+      </fileset>
+    </copy>
+    <copy todir="${pack.dir}/boot">
+      <fileset dir="${distrib.dir}">
+        <include name="*-spec-*.jar"/>
+      </fileset>
     </copy>
   </target>
 

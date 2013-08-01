@@ -19,36 +19,63 @@
  *
  ??*/
 
-package com.zotoh.hohenheim.core
+package com.zotoh.hohenheim.loaders
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable
-import org.apache.commons.io.{FileUtils=>FUT}
+
 import java.net.URLClassLoader
 import java.io.File
 import java.net.URL
 
-import Constants._
 
 /**
  * @author kenl
  */
-class AppClassLoader(par:RootClassLoader) extends AbstractClassLoader(par) {
+class RootClassLoader(par:ClassLoader) extends AbstractClassLoader( par) {
 
-  def configure(appDir:String) {
-    val c= new File(appDir, POD_CLASSES)
-    val p= new File(appDir, POD_PATCH)
-    val b= new File(appDir, POD_LIB)
+  val base=System.getProperty("hohenheim.home","")
+  if (base.length > 0) { load(base) }
+
+  def configure(baseDir:String) {
+    load( baseDir)
+  }
+
+  private def load(baseDir:String) {
+    val p= new File(baseDir, "patch")
+    val d= new File(baseDir, "dist")
+    val b= new File(baseDir, "lib")
+
     if (!_loaded) {
-      findUrls(p)
-      addUrl(c)
-      findUrls(b)
-      if ( new File(appDir, WEB_INF).exists() ) {
-        addUrl( new File(appDir, WEB_CLASSES))
-        findUrls(new File(appDir, WEB_LIB))
-      }
+      findUrls(p).findUrls(d).findUrls(b)
     }
+
     _loaded=true
   }
 
 }
+
+/**
+ * @author kenl
+ */
+class ExecClassLoader(par:ClassLoader) extends AbstractClassLoader( new RootClassLoader( par)) {
+
+  val base=System.getProperty("hohenheim.home","")
+  if (base.length > 0) { load(base) }
+
+  private def load(base:String) {
+    val p= new File(base, "exec")
+
+    if (!_loaded) {
+      findUrls(p)
+    }
+
+    _loaded=true
+  }
+
+  def configure(baseDir:String) {
+    load(baseDir)
+  }
+
+}
+

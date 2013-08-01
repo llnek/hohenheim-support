@@ -19,34 +19,34 @@
  *
  ??*/
 
-package com.zotoh.hohenheim.core
+package com.zotoh.hohenheim.loaders
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable
+//import org.apache.commons.io.{FileUtils=>FUT}
 import java.net.URLClassLoader
 import java.io.File
 import java.net.URL
-import java.io.FilenameFilter
 
 /**
  * @author kenl
  */
-abstract class AbstractClassLoader(par:ClassLoader) extends URLClassLoader( Array[URL]() ,par) {
+class AppClassLoader(par:RootClassLoader) extends AbstractClassLoader(par) {
 
-  protected var _loaded=false
-
-  def findUrls(dir:File): this.type = {
-    val seq= dir.listFiles( new FilenameFilter() {
-      def accept(f:File,n:String) = n.endsWith(".jar")
-    })
-    seq.foreach( addUrl _ )
-    this
-  }
-
-  def addUrl(f:File): this.type = {
-    addURL( f.toURI.toURL)
-    this
+  def configure(appDir:String) {
+    val c= new File(appDir, "POD-INF/classes")
+    val p= new File(appDir, "POD-INF/patch")
+    val b= new File(appDir, "POD-INF/lib")
+    if (!_loaded) {
+      findUrls(p)
+      addUrl(c)
+      findUrls(b)
+      if ( new File(appDir, "WEB-INF").exists() ) {
+        addUrl( new File(appDir, "WEB-INF/classes"))
+        findUrls(new File(appDir, "WEB-INF/lib"))
+      }
+    }
+    _loaded=true
   }
 
 }
-
